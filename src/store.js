@@ -7,7 +7,6 @@ import axios from 'axios';
 const initialState = {
   players: [],
   bestShooters: [],
-  selectedPlayer: {},
   selectedPage: ''
 }
 
@@ -28,7 +27,10 @@ const getBestShooters = (players) => {
 
 // ACTION TYPES
 const GET_PLAYERS = 'GET_PLAYERS';
-const GET_BEST_SHOOTERS = 'GET_BEST_SHOOTERS';
+const DELETE_PLAYER = 'DELETE_PLAYER';
+const ADD_PLAYER = 'ADD_PLAYER';
+const SET_PAGE = 'SET_PAGE';
+
 
 // ACTION CREATORS & THUNKS
 const _getPlayers = (players) => ({type: GET_PLAYERS, players});
@@ -40,6 +42,25 @@ const getPlayers = () => {
   }
 }
 
+const _deletePlayer = (player) => ({type: DELETE_PLAYER, player});
+const deletePlayer = (player) => {
+  return (dispatch) => {
+    axios.delete(`/api/players/${player.id}`)
+      .then( () => dispatch(_deletePlayer(player)))
+  }
+}
+
+const _addPlayer = (player) => ({type: ADD_PLAYER, player});
+const addPlayer = () => {
+  return (dispatch) => {
+    axios.post('/api/players')
+      .then( response => response.data)
+      .then( player => dispatch(_addPlayer(player)))
+  }
+}
+
+const setPage = (pageName) => ({type: SET_PAGE, pageName});
+
 
 // REDUCERS
 const reducer = (state = initialState, action) => {
@@ -49,6 +70,18 @@ const reducer = (state = initialState, action) => {
         players: action.players,
         bestShooters: getBestShooters(action.players)
       }
+    case DELETE_PLAYER:
+      return {...state,
+        players: state.players.filter( player => player.id !== action.player.id),
+        bestShooters: getBestShooters(state.players.filter( player => player.id !== action.player.id))
+      }
+    case ADD_PLAYER:
+      return {...state,
+        players: [...state.players, action.player],
+        bestShooters: getBestShooters([...state.players, action.player])
+      }
+    case SET_PAGE:
+      return {...state, selectedPage: action.pageName}
     default:
       return state
   }
@@ -59,5 +92,8 @@ const store = createStore(reducer, applyMiddleware(logger, thunk));
 export default store;
 
 export {
-  getPlayers
+  getPlayers,
+  deletePlayer,
+  addPlayer,
+  setPage
 }

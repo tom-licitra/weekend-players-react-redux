@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import store, { getPlayers } from './store';
 import { Provider } from 'react-redux';
+
+import store, { getPlayers, setPage } from './store';
 import Nav from './Nav';
 import Players from './Players';
 import BestShooters from './BestShooters';
@@ -10,11 +11,11 @@ import BestShooters from './BestShooters';
 class Main extends Component {
 
   componentDidMount () {
+    store.dispatch(setPage(window.location.hash.split("/").pop()));
     store.dispatch(getPlayers());
   }
 
   render () {
-    console.log(this.state);
     return (
     <Provider store={ store }>
       <Router>

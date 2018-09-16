@@ -35,6 +35,8 @@
     "babel-preset-stage-3": "^6.24.1"
   },
   "scripts": {
+    "postinstall": "npm run webpack",
+    "start": "node server.js",
     "webpack": "./node_modules/webpack/bin/webpack.js",
     "start:dev": "npm run webpack -- --watch --mode=development & DATABASE_URL=postgres://localhost/react-redux nodemon server.js --ignore src/ --ignore dist"
   },

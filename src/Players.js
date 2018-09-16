@@ -1,13 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux'
+import { deletePlayer, addPlayer } from './store'
 
-const Players = ({ players }) => {
+const Players = ({ players, deletePlayer, addPlayer }) => {
   return (
     <div>
-      <button type="button">Add new player</button>
+      <button type="button" onClick={addPlayer}>Add new player</button>
       <div id="players">
         <ul>
-          {players.map(player => <li key={player.id}>{player.name}: {player.shootingPct}%</li>)}
+          {
+            players.map(player => <li key={player.id}>{player.name}: {player.shootingPct}%  <button type="button" onClick={() => deletePlayer(player)}>X</button></li>)
+          }
         </ul>
         <hr />
       </div>
@@ -16,9 +19,12 @@ const Players = ({ players }) => {
 }
 
 const mapStateToProps = (state) => {
-  console.log("Calling MSTP in Players");
-  console.log(state);
   return {players: state.players}
 }
 
-export default connect(mapStateToProps)(Players);
+const mapDispatchToProps = (dispatch) => ({
+  deletePlayer: (player) => dispatch(deletePlayer(player)),
+  addPlayer: () => dispatch(addPlayer())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Players);

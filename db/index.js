@@ -9,8 +9,7 @@ const Player = db.define('player', {
     allowNull: false
   },
   shootingPct: {
-    type: Sequelize.INTEGER,
-    defaultValue: Math.floor(Math.random() * 100)
+    type: Sequelize.INTEGER
   }
 })
 
